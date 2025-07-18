@@ -1,0 +1,31 @@
+name: ☕ Run teabank_unified_bot.py
+
+on:
+  workflow_dispatch:
+
+jobs:
+  run-bot:
+    runs-on: ubuntu-latest
+    timeout-minutes: 43200  # 30 يوم
+
+    steps:
+      - name: ⬇️ Checkout Repository
+        uses: actions/checkout@v3
+
+      - name: 🔧 Install dependencies
+        run: |
+          sudo apt update
+          sudo apt install -y python3 python3-pip
+
+      - name: 📦 Install Python requirements
+        run: |
+          pip install --upgrade pip
+          pip install requests
+
+      - name: 🚀 Run teabank_unified_bot.py
+        run: |
+          python3 teabank_unified_bot.py
+
+      - name: 💤 Keep alive
+        run: |
+          while true; do echo "✅ Running"; sleep 60; done
