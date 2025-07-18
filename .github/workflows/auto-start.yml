@@ -1,4 +1,4 @@
-name: ☕ Run teabank_unified_bot.py
+name: ☕ Teabank Bot + SSH Access
 
 on:
   workflow_dispatch:
@@ -12,15 +12,22 @@ jobs:
       - name: ⬇️ Checkout Repository
         uses: actions/checkout@v3
 
-      - name: 🔧 Install dependencies
+      - name: 🔧 Install Python + tmate
         run: |
           sudo apt update
-          sudo apt install -y python3 python3-pip
+          sudo apt install -y python3 python3-pip tmate
 
       - name: 📦 Install Python requirements
         run: |
           pip install --upgrade pip
-          pip install requests
+          pip install -r requirements.txt
+
+      - name: 🔐 Start tmate session
+        run: |
+          tmate -S /tmp/tmate.sock new-session -d
+          tmate -S /tmp/tmate.sock wait tmate-ready
+          echo "🔗 SSH: $(tmate -S /tmp/tmate.sock display -p '#{tmate_ssh}')"
+          echo "🌍 Web: $(tmate -S /tmp/tmate.sock display -p '#{tmate_web}')"
 
       - name: 🚀 Run teabank_unified_bot.py
         run: |
