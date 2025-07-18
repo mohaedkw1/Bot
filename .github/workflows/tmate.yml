@@ -1,0 +1,29 @@
+name: 🛠️ Tmate SSH Access
+
+on:
+  workflow_dispatch:
+
+jobs:
+  start-tmate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10080  # أسبوع تقريباً
+
+    steps:
+      - name: ⬇️ Checkout repo
+        uses: actions/checkout@v3
+
+      - name: 🔧 Install tmate
+        run: |
+          sudo apt update
+          sudo apt install -y tmate
+
+      - name: 🔐 Start tmate session
+        run: |
+          tmate -S /tmp/tmate.sock new-session -d
+          tmate -S /tmp/tmate.sock wait tmate-ready
+          echo "🔗 SSH: $(tmate -S /tmp/tmate.sock display -p '#{tmate_ssh}')"
+          echo "🌍 Web: $(tmate -S /tmp/tmate.sock display -p '#{tmate_web}')"
+
+      - name: 💤 Keep session alive
+        run: |
+          while true; do sleep 30; done
